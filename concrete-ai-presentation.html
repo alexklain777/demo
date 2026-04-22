@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бетонный бизнес + ИИ</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #F97316;
+            --primary-light: #FB923C;
+            --accent: #FBBF24;
+            --bg: #0A0A0B;
+            --bg2: #111113;
+            --bg3: #1A1A1E;
+            --border: rgba(255,255,255,0.08);
+            --text: #F4F4F5;
+            --muted: #71717A;
+            --gradient: linear-gradient(135deg, #F97316, #FBBF24);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .progress-bar {
+            position: fixed; top: 0; left: 0;
+            height: 3px; background: var(--gradient);
+            transition: width 0.4s ease; z-index: 1000;
+        }
+        .slide-deck {
+            position: relative;
+            width: 100vw; height: 100vh;
+        }
+        @media (min-width: 769px) {
+            .slide-deck {
+                max-width: calc(100vh * 16 / 9);
+                max-height: calc(100vw * 9 / 16);
+                margin: auto;
+                position: absolute; inset: 0;
+            }
+        }
+        .slide {
+            position: absolute;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 60px;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.5s ease;
+            background: var(--bg);
+            overflow: hidden;
+        }
+        .slide.active { opacity: 1; visibility: visible; }
+        .slide-content {
+            width: 100%; max-width: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            gap: 20px;
+        }
+
+        /* Typography */
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+        .slide-title {
+            font-size: clamp(36px, 5.5vw, 72px);
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1; text-align: center;
+        }
+        .slide-subtitle {
+            font-size: clamp(16px, 2vw, 24px);
+            color: var(--muted); text-align: center;
+        }
+        h2.section-title {
+            font-size: clamp(26px, 3.5vw, 48px);
+            font-weight: 700; text-align: center;
+        }
+        .highlight { color: var(--primary); }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px; width: 100%;
+        }
+        .cards-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px; width: 100%;
+        }
+        .card {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px 20px;
+            text-align: left;
+        }
+        .card-icon { font-size: 28px; margin-bottom: 10px; }
+        .card h3 { font-size: clamp(13px, 1.5vw, 17px); font-weight: 600; margin-bottom: 6px; }
+        .card p { font-size: clamp(11px, 1.1vw, 14px); color: var(--muted); line-height: 1.5; }
+        .card.accent-card { border-color: rgba(249,115,22,0.4); background: rgba(249,115,22,0.06); }
+
+        /* Big stats */
+        .stats-row {
+            display: flex; gap: 32px;
+            justify-content: center; width: 100%;
+        }
+        .stat-block { text-align: center; }
+        .stat-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(36px, 5vw, 64px);
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-label { font-size: clamp(12px, 1.2vw, 16px); color: var(--muted); margin-top: 4px; }
+
+        /* List */
+        .icon-list { list-style: none; width: 100%; }
+        .icon-list li {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: clamp(13px, 1.4vw, 17px);
+        }
+        .icon-list li:last-child { border-bottom: none; }
+        .icon-list .ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+        /* Two-col layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px; width: 100%;
+            align-items: start;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            background: rgba(249,115,22,0.15);
+            color: var(--primary-light);
+            border: 1px solid rgba(249,115,22,0.3);
+            border-radius: 100px;
+            padding: 6px 18px;
+            font-size: clamp(11px, 1vw, 14px);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Road map */
+        .roadmap {
+            display: flex; gap: 0; width: 100%;
+        }
+        .roadmap-step {
+            flex: 1; text-align: center; position: relative;
+        }
+        .roadmap-step::after {
+            content: '→';
+            position: absolute; right: -12px; top: 24px;
+            color: var(--primary); font-size: 20px;
+        }
+        .roadmap-step:last-child::after { display: none; }
+        .step-num {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700; font-size: 18px; color: #fff;
+            margin: 0 auto 10px;
+        }
+        .step-title { font-size: clamp(11px, 1.1vw, 14px); font-weight: 600; margin-bottom: 4px; }
+        .step-desc { font-size: clamp(10px, 0.9vw, 12px); color: var(--muted); }
+
+        /* Money block */
+        .money-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px; width: 100%;
+        }
+        .money-card {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .money-card .amount {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(22px, 2.8vw, 36px);
+            font-weight: 800; color: var(--primary);
+        }
+        .money-card .desc { font-size: clamp(11px, 1vw, 13px); color: var(--muted); margin-top: 6px; }
+
+        /* CTA Slide */
+        .cta-box {
+            border: 2px solid rgba(249,115,22,0.4);
+            border-radius: 24px;
+            padding: 40px 60px;
+            text-align: center;
+            background: rgba(249,115,22,0.05);
+        }
+
+        /* Slide-specific backgrounds */
+        .slide-hero { background: radial-gradient(ellipse at 60% 50%, rgba(249,115,22,0.12) 0%, var(--bg) 70%); }
+        .slide-dark2 { background: var(--bg2); }
+
+        /* Chart container */
+        .chart-wrap {
+            width: min(90%, 500px);
+            height: clamp(160px, 28vh, 260px);
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; align-items: center; gap: 16px;
+            z-index: 1000;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--border);
+            color: #fff; width: 40px; height: 40px;
+            border-radius: 50%; cursor: pointer;
+            font-size: 16px; transition: background 0.2s;
+        }
+        .nav-btn:hover { background: rgba(249,115,22,0.3); }
+        .slide-counter { color: var(--muted); font-size: 13px; min-width: 48px; text-align: center; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide.active .slide-content > * {
+            animation: fadeUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        .slide.active .slide-content > *:nth-child(1) { animation-delay: 0.05s; }
+        .slide.active .slide-content > *:nth-child(2) { animation-delay: 0.15s; }
+        .slide.active .slide-content > *:nth-child(3) { animation-delay: 0.25s; }
+        .slide.active .slide-content > *:nth-child(4) { animation-delay: 0.35s; }
+        .slide.active .slide-content > *:nth-child(5) { animation-delay: 0.45s; }
+    </style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slide-deck">
+
+    <!-- SLIDE 1: TITLE -->
+    <div class="slide slide-hero active">
+        <div class="slide-content">
+            <div class="badge">🏗️ Строительный бизнес 2025</div>
+            <h1 class="slide-title">Бетон + ИИ =<br>новый уровень бизнеса</h1>
+            <p class="slide-subtitle">Как запустить бизнес по бетонированию,<br>внедрить нейросети и зарабатывать больше конкурентов</p>
+            <div class="stats-row" style="margin-top: 8px;">
+                <div class="stat-block"><div class="stat-num">×3</div><div class="stat-label">быстрее сметы</div></div>
+                <div class="stat-block"><div class="stat-num">40%</div><div class="stat-label">экономия времени</div></div>
+                <div class="stat-block"><div class="stat-num">+60%</div><div class="stat-label">маржа с ИИ</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: РЫНОК -->
+    <div class="slide slide-dark2">
+        <div class="slide-content">
+            <div class="badge">Рынок</div>
+            <h2 class="section-title">Почему <span class="highlight">сейчас</span> — лучший момент</h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">📈</div>
+                    <h3>Рынок растёт</h3>
+                    <p>Строительство частных домов, ИЖС и коммерческой недвижимости бьёт рекорды. Спрос на фундаменты и площадки стабильно высокий.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🤖</div>
+                    <h3>Конкуренты не готовы</h3>
+                    <p>95% малых бригад работают «по старинке». Тот, кто внедрит ИИ первым — получит очевидное конкурентное преимущество.</p>
+                </div>
+                <div class="card accent-card">
+                    <div class="card-icon">💰</div>
+                    <h3>Маржа высокая</h3>
+                    <p>Рентабельность бетонных работ — 25–45%. С ИИ-оптимизацией можно поднять ещё на 15–20% за счёт точности и скорости.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: ЧТО МЫ ДЕЛАЕМ -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="badge">Услуги</div>
+            <h2 class="section-title">Что мы делаем</h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🏠</div>
+                    <h3>Фундаменты</h3>
+                    <p>Ленточные, плитные, свайно-ростверковые. Для частных домов и коммерческих объектов.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛣️</div>
+                    <h3>Площадки и отмостки</h3>
+                    <p>Парковки, дорожки, двор. Отмостки по периметру дома — защита от воды и промерзания.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏗️</div>
+                    <h3>Монолитные конструкции</h3>
+                    <p>Перекрытия, колонны, стены. Промышленное и гражданское строительство.</p>
+                </div>
+            </div>
+            <div class="cards-grid-2" style="margin-top: 4px;">
+                <div class="card">
+                    <div class="card-icon">📐</div>
+                    <h3>Расчёт и проектирование</h3>
+                    <p>Составление смет, выбор марки бетона, армирование — с использованием ИИ-инструментов.</p>
+                </div>
+                <div class="card accent-card">
+                    <div class="card-icon">✅</div>
+                    <h3>Контроль качества</h3>
+                    <p>Видеофиксация этапов, ИИ-анализ дефектов, отчёты для заказчика после каждого этапа.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: БОЛИ РЫНКА -->
+    <div class="slide slide-dark2">
+        <div class="slide-content">
+            <div class="badge">Проблемы отрасли</div>
+            <h2 class="section-title">Что <span class="highlight">болит</span> у клиентов и бригад</h2>
+            <div class="two-col">
+                <div>
+                    <p style="font-size:13px; color: var(--muted); margin-bottom: 12px; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Проблемы клиентов</p>
+                    <ul class="icon-list">
+                        <li><span class="ico">😤</span><span>Непрозрачные сметы — итог всегда выше обещанного</span></li>
+                        <li><span class="ico">⏰</span><span>Сроки срываются — бригада пропадает</span></li>
+                        <li><span class="ico">🔍</span><span>Невозможно проверить качество работ</span></li>
+                        <li><span class="ico">📞</span><span>Сложно найти надёжного подрядчика</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <p style="font-size:13px; color: var(--muted); margin-bottom: 12px; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Проблемы бригад</p>
+                    <ul class="icon-list">
+                        <li><span class="ico">📊</span><span>Сметы считают вручную — долго и с ошибками</span></li>
+                        <li><span class="ico">📢</span><span>Нет понимания как искать заказы</span></li>
+                        <li><span class="ico">📋</span><span>Документооборот отнимает часы</span></li>
+                        <li><span class="ico">🗓️</span><span>Хаос в планировании — объекты пересекаются</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: КАК ИИ ПОМОГАЕТ -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="badge">🤖 ИИ в деле</div>
+            <h2 class="section-title">Как нейросети <span class="highlight">решают</span> эти проблемы</h2>
+            <div class="cards-grid">
+                <div class="card accent-card">
+                    <div class="card-icon">🧮</div>
+                    <h3>Автосмета за 2 минуты</h3>
+                    <p>Клиент отправляет фото участка или план — ИИ автоматически считает объём бетона, арматуры, стоимость работ.</p>
+                </div>
+                <div class="card accent-card">
+                    <div class="card-icon">📸</div>
+                    <h3>Контроль качества по фото</h3>
+                    <p>Компьютерное зрение анализирует снимки опалубки и готовых конструкций — выявляет трещины, дефекты, отклонения.</p>
+                </div>
+                <div class="card accent-card">
+                    <div class="card-icon">💬</div>
+                    <h3>ИИ-ассистент для клиентов</h3>
+                    <p>Чат-бот принимает заявки 24/7, отвечает на вопросы, согласовывает сроки. Освобождает 2–3 часа в день.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🌤️</div>
+                    <h3>Прогноз погоды для заливки</h3>
+                    <p>ИИ анализирует прогноз и выбирает оптимальное окно для бетонирования — меньше брака из-за мороза или жары.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📄</div>
+                    <h3>Автодокументы</h3>
+                    <p>Договоры, акты, накладные генерируются автоматически на основе параметров объекта. Минута вместо часа.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🚁</div>
+                    <h3>Дроны + ИИ-анализ</h3>
+                    <p>Съёмка объекта дроном + ИИ-обработка = точный объём земляных работ и отчёт для заказчика.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: КОНКРЕТНЫЕ ИНСТРУМЕНТЫ -->
+    <div class="slide slide-dark2">
+        <div class="slide-content">
+            <div class="badge">Инструменты</div>
+            <h2 class="section-title">Конкретные <span class="highlight">ИИ-инструменты</span> для старта</h2>
+            <div class="two-col">
+                <ul class="icon-list">
+                    <li><span class="ico">🤖</span><div><strong>ChatGPT / Claude</strong><br><span style="color:var(--muted); font-size:12px;">Составление смет, договоров, ответы клиентам, скрипты продаж</span></div></li>
+                    <li><span class="ico">🗣️</span><div><strong>Голосовые боты (Voiceflow)</strong><br><span style="color:var(--muted); font-size:12px;">Автоприём заявок по телефону и в мессенджерах</span></div></li>
+                    <li><span class="ico">📐</span><div><strong>SmartEstimator / ГРАНД-Смета + ИИ</strong><br><span style="color:var(--muted); font-size:12px;">Нейросеть для расчёта строительных смет</span></div></li>
+                </ul>
+                <ul class="icon-list">
+                    <li><span class="ico">📷</span><div><strong>Roboflow / Google Vision</strong><br><span style="color:var(--muted); font-size:12px;">Анализ фото конструкций, поиск дефектов</span></div></li>
+                    <li><span class="ico">🗺️</span><div><strong>DroneDeploy</strong><br><span style="color:var(--muted); font-size:12px;">Картографирование объектов дроном, 3D-модели</span></div></li>
+                    <li><span class="ico">📊</span><div><strong>Notion AI / ClickUp AI</strong><br><span style="color:var(--muted); font-size:12px;">Планирование объектов, трекинг задач, авторепорты</span></div></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: КАК ЗАРАБОТАТЬ -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="badge">💰 Монетизация</div>
+            <h2 class="section-title">Как <span class="highlight">заработать</span> на ИИ в бетоне</h2>
+            <div class="cards-grid">
+                <div class="card accent-card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Больше объектов</h3>
+                    <p>ИИ экономит 2–3 часа в день на сметах и документах → берёте на 30% больше заказов при той же команде.</p>
+                </div>
+                <div class="card accent-card">
+                    <div class="card-icon">💎</div>
+                    <h3>Премиум за качество</h3>
+                    <p>«ИИ-контроль качества» и видеоотчёты = доверие клиента = можно брать на 15–25% дороже конкурентов.</p>
+                </div>
+                <div class="card accent-card">
+                    <div class="card-icon">🏪</div>
+                    <h3>Продажа ИИ-услуг</h3>
+                    <p>Другие бригады тоже хотят автоматизацию. Продавайте готовые решения: бот для заявок, шаблоны смет, настройку ИИ.</p>
+                </div>
+            </div>
+            <div class="cards-grid-2" style="margin-top: 4px;">
+                <div class="card">
+                    <div class="card-icon">📱</div>
+                    <h3>Подписочный сервис</h3>
+                    <p>Создайте Telegram-бот «Смета за 2 минуты» для строителей. Подписка 2–5 тыс. руб./мес. × 100 клиентов = 200–500 тыс./мес.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🎓</div>
+                    <h3>Обучение</h3>
+                    <p>Курс «ИИ для строительной бригады». Вы уже эксперты — учите других. Средний чек курса: 15–30 тыс. руб.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: ФИНАНСЫ С ГРАФИКОМ -->
+    <div class="slide slide-dark2">
+        <div class="slide-content">
+            <div class="badge">Финансовая модель</div>
+            <h2 class="section-title">Сколько можно <span class="highlight">зарабатывать</span></h2>
+            <div class="two-col" style="align-items: center;">
+                <div class="money-row" style="grid-template-columns: 1fr; gap: 12px;">
+                    <div class="money-card">
+                        <div class="amount">180–250 тыс.</div>
+                        <div class="desc">💼 Бригада 4 чел. без ИИ — выручка в месяц</div>
+                    </div>
+                    <div class="money-card" style="border-color: rgba(249,115,22,0.5); background: rgba(249,115,22,0.08);">
+                        <div class="amount">350–500 тыс.</div>
+                        <div class="desc">🤖 Та же бригада с ИИ-автоматизацией</div>
+                    </div>
+                    <div class="money-card" style="border-color: rgba(251,191,36,0.5); background: rgba(251,191,36,0.06);">
+                        <div class="amount">800 тыс.+</div>
+                        <div class="desc">🚀 Бетон + ИИ-сервис для других строителей</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="chart-wrap">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    <p style="text-align:center; color: var(--muted); font-size: 12px; margin-top: 8px;">Прогноз выручки по месяцам, тыс. руб.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: ДОРОЖНАЯ КАРТА -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="badge">Дорожная карта</div>
+            <h2 class="section-title">С чего <span class="highlight">начать</span> — план на 6 месяцев</h2>
+            <div class="roadmap">
+                <div class="roadmap-step">
+                    <div class="step-num">1</div>
+                    <div class="step-title">Месяц 1–2</div>
+                    <div class="step-desc">Регистрация ИП, первые заказы через Авито/Профи.ру, базовое оборудование</div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">2</div>
+                    <div class="step-title">Месяц 2–3</div>
+                    <div class="step-desc">Внедряем ChatGPT для смет, создаём Telegram-бот для приёма заявок</div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">3</div>
+                    <div class="step-title">Месяц 3–4</div>
+                    <div class="step-desc">Видео- и фотоотчёты с ИИ-анализом, сарафан и отзывы на платформах</div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">4</div>
+                    <div class="step-title">Месяц 4–5</div>
+                    <div class="step-desc">Масштаб: 2-я бригада, дрон, выход на Яндекс.Директ с ИИ-рекламой</div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">5</div>
+                    <div class="step-title">Месяц 6+</div>
+                    <div class="step-desc">Запуск ИИ-сервиса для других строителей, первые 50 подписчиков</div>
+                </div>
+            </div>
+            <div class="card" style="width: 100%; margin-top: 8px; background: rgba(249,115,22,0.06); border-color: rgba(249,115,22,0.3);">
+                <p style="text-align:center; font-size: clamp(13px, 1.3vw, 16px);">💡 <strong>Стартовый бюджет:</strong> от 150–300 тыс. руб. — инструмент, опалубка, реклама и первый месяц работы</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 10: РИСКИ -->
+    <div class="slide slide-dark2">
+        <div class="slide-content">
+            <div class="badge">Риски и решения</div>
+            <h2 class="section-title">Главные <span class="highlight">риски</span> и как их закрыть</h2>
+            <div class="cards-grid-2">
+                <div class="card">
+                    <div class="card-icon">⚠️</div>
+                    <h3>«ИИ ошибётся в смете»</h3>
+                    <p>Решение: ИИ — помощник, итог всегда проверяет опытный прораб. Экономим время, а не убираем контроль.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📉</div>
+                    <h3>Сезонность зимой</h3>
+                    <p>Решение: подогрев бетона, зимнее бетонирование — отдельная услуга с наценкой 30%. Конкуренция минимальна.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🙅</div>
+                    <h3>«Я не разбираюсь в ИИ»</h3>
+                    <p>Решение: ChatGPT освоить за 1 день. Telegram-бот под ключ — 15–30 тыс. руб. Порог входа минимальный.</p>
+                </div>
+                <div class="card accent-card">
+                    <div class="card-icon">🏆</div>
+                    <h3>Конкуренты скопируют</h3>
+                    <p>Решение: репутация и база клиентов строится месяцами. Кто начал раньше — тот выигрывает. Начинайте сейчас.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 11: КОНКУРЕНТНОЕ ПРЕИМУЩЕСТВО -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="badge">Позиционирование</div>
+            <h2 class="section-title">Чем вы будете <span class="highlight">отличаться</span></h2>
+            <div class="two-col" style="align-items:center;">
+                <ul class="icon-list">
+                    <li><span class="ico">⚡</span><span><strong>Смета за 2 минуты</strong> — пока конкурент считает 2 дня, вы уже закрыли сделку</span></li>
+                    <li><span class="ico">📹</span><span><strong>Видеоотчёт каждого этапа</strong> — клиент видит всё онлайн, доверие максимальное</span></li>
+                    <li><span class="ico">🔬</span><span><strong>ИИ-контроль дефектов</strong> — гарантия качества с доказательной базой</span></li>
+                    <li><span class="ico">🤝</span><span><strong>Договор + акты за 5 минут</strong> — никакой бумажной волокиты для клиента</span></li>
+                    <li><span class="ico">🌙</span><span><strong>Заявки 24/7</strong> — бот принимает ночью, вы звоните утром</span></li>
+                </ul>
+                <div style="text-align:center;">
+                    <div class="chart-wrap">
+                        <canvas id="compareChart"></canvas>
+                    </div>
+                    <p style="color: var(--muted); font-size: 12px; margin-top: 8px;">Сравнение с обычной бригадой (баллы)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 12: CTA -->
+    <div class="slide slide-hero">
+        <div class="slide-content">
+            <div class="badge">🚀 Время действовать</div>
+            <div class="cta-box">
+                <h1 class="slide-title" style="font-size: clamp(28px, 4vw, 56px);">Бетонный бизнес с ИИ —<br>это реально</h1>
+                <p style="font-size: clamp(14px, 1.6vw, 20px); color: var(--muted); margin: 20px 0;">Вам не нужно быть программистом. Нужно начать делать<br>и использовать инструменты, которые уже доступны сегодня.</p>
+                <div class="stats-row" style="justify-content:center; margin: 24px 0;">
+                    <div class="stat-block"><div class="stat-num">150к</div><div class="stat-label">стартовый бюджет</div></div>
+                    <div class="stat-block"><div class="stat-num">3 мес</div><div class="stat-label">до первой прибыли</div></div>
+                    <div class="stat-block"><div class="stat-num">500к+</div><div class="stat-label">потенциал/месяц</div></div>
+                </div>
+            </div>
+            <p style="color: var(--muted); font-size: clamp(12px, 1.1vw, 15px); margin-top: 8px;">← → для навигации · Пробел для следующего слайда</p>
+        </div>
+    </div>
+
+</div><!-- /.slide-deck -->
+
+<div class="nav-controls">
+    <button class="nav-btn" onclick="prevSlide()">←</button>
+    <span class="slide-counter"><span id="current">1</span> / <span id="total">12</span></span>
+    <button class="nav-btn" onclick="nextSlide()">→</button>
+</div>
+
+<script>
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+document.getElementById('total').textContent = total;
+
+function showSlide(n) {
+    if (n < 1) n = 1;
+    if (n > total) n = total;
+    current = n;
+    document.querySelectorAll('.slide').forEach((s, i) => {
+        s.classList.toggle('active', i === n - 1);
+    });
+    document.getElementById('current').textContent = n;
+    document.getElementById('progressBar').style.width = (n / total * 100) + '%';
+    if (n === 8) initRevenueChart();
+    if (n === 11) initCompareChart();
+}
+
+function nextSlide() { showSlide(current + 1); }
+function prevSlide() { showSlide(current - 1); }
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+});
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-controls')) nextSlide();
+});
+
+let revenueInit = false;
+function initRevenueChart() {
+    if (revenueInit) return; revenueInit = true;
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'bar',
+        data: {
+            labels: ['М1','М2','М3','М4','М5','М6'],
+            datasets: [
+                {
+                    label: 'Без ИИ',
+                    data: [180, 200, 210, 220, 230, 240],
+                    backgroundColor: 'rgba(113,113,122,0.4)',
+                    borderRadius: 6,
+                },
+                {
+                    label: 'С ИИ',
+                    data: [180, 240, 310, 390, 480, 560],
+                    backgroundColor: 'rgba(249,115,22,0.7)',
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#A1A1AA', font: { size: 11 } } }
+            },
+            scales: {
+                x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#71717A' } },
+                y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#71717A' } }
+            }
+        }
+    });
+}
+
+let compareInit = false;
+function initCompareChart() {
+    if (compareInit) return; compareInit = true;
+    new Chart(document.getElementById('compareChart'), {
+        type: 'radar',
+        data: {
+            labels: ['Скорость смет','Контроль качества','Клиентсервис','Документы','Масштаб'],
+            datasets: [
+                {
+                    label: 'Обычная бригада',
+                    data: [3, 4, 3, 2, 3],
+                    borderColor: 'rgba(113,113,122,0.6)',
+                    backgroundColor: 'rgba(113,113,122,0.1)',
+                    pointBackgroundColor: 'rgba(113,113,122,0.6)',
+                },
+                {
+                    label: 'Бригада с ИИ',
+                    data: [9, 9, 8, 10, 9],
+                    borderColor: 'rgba(249,115,22,0.9)',
+                    backgroundColor: 'rgba(249,115,22,0.15)',
+                    pointBackgroundColor: '#F97316',
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#A1A1AA', font: { size: 11 } } }
+            },
+            scales: {
+                r: {
+                    min: 0, max: 10,
+                    grid: { color: 'rgba(255,255,255,0.06)' },
+                    ticks: { display: false },
+                    pointLabels: { color: '#A1A1AA', font: { size: 11 } },
+                    angleLines: { color: 'rgba(255,255,255,0.06)' }
+                }
+            }
+        }
+    });
+}
+
+showSlide(1);
+</script>
+</body>
+</html>
