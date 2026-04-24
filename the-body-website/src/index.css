@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+/* ─── Design tokens ─────────────────────────────────────────────────────── */
+:root {
+  /* Raw palette (HSL triplets — no hsl() wrapper) */
+  --ink:   25 12% 8%;
+  --cream: 38 25% 91%;
+  --ochre: 32 38% 55%;
+  --terra: 20 38% 22%;
+
+  /* Semantic tokens */
+  --background:          var(--ink);
+  --foreground:          var(--cream);
+  --card:                var(--ink);
+  --card-foreground:     var(--cream);
+  --primary:             var(--ochre);
+  --primary-foreground:  var(--ink);
+  --secondary:           var(--terra);
+  --secondary-foreground: var(--cream);
+  --muted:               25 8% 14%;
+  --muted-foreground:    38 12% 68%;
+  --accent:              var(--ochre);
+  --accent-foreground:   var(--ink);
+  --border:              38 20% 85% / 0.14;
+  --ring:                var(--ochre);
+  --radius:              0.75rem;
+
+  /* Typography */
+  --font-display: "Cormorant Garamond", "Georgia", serif;
+  --font-body:    "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Layout */
+  --gutter: clamp(20px, 4.2vw, 56px);
+  --max:    1440px;
+}
+
+/* ─── Tailwind v4 theme ─────────────────────────────────────────────────── */
+@theme {
+  --color-background:        hsl(var(--background));
+  --color-foreground:        hsl(var(--foreground));
+  --color-card:              hsl(var(--card));
+  --color-card-foreground:   hsl(var(--card-foreground));
+  --color-primary:           hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary:         hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted:             hsl(var(--muted));
+  --color-muted-foreground:  hsl(var(--muted-foreground));
+  --color-accent:            hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-border:            hsl(var(--border));
+  --color-ring:              hsl(var(--ring));
+
+  --font-display: "Cormorant Garamond", "Georgia", serif;
+  --font-body:    "Montserrat", sans-serif;
+
+  --radius-sm:  calc(var(--radius) - 4px);
+  --radius-md:  calc(var(--radius) - 2px);
+  --radius-lg:  var(--radius);
+  --radius-xl:  calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+  --radius-3xl: calc(var(--radius) + 18px);
+
+  --animate-marquee:     marquee 30s linear infinite;
+  --animate-marquee-rev: marquee-rev 36s linear infinite;
+  --animate-fade-up:     fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  --animate-warm-drift:      warm-drift 14s ease infinite;
+  --animate-accordion-down:  accordion-down 0.2s ease-out;
+  --animate-accordion-up:    accordion-up 0.2s ease-out;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marquee-rev {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translate3d(0, 24px, 0); filter: blur(6px); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0);   filter: blur(0); }
+}
+@keyframes warm-drift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+@keyframes accordion-down {
+  from { height: 0; opacity: 0; }
+  to   { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to   { height: 0; opacity: 0; }
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────────── */
+html, body, #root {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* ─── Utility classes ───────────────────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
+.font-body    { font-family: var(--font-body); }
+
+/* ─── Liquid-glass components ───────────────────────────────────────────── */
+@layer components {
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.4px;
+    background: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.42) 0%,
+      rgba(255,255,255,0.14) 20%,
+      rgba(255,255,255,0)    40%,
+      rgba(255,255,255,0)    60%,
+      rgba(255,255,255,0.14) 80%,
+      rgba(255,255,255,0.42) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .liquid-glass-strong {
+    background: rgba(255, 255, 255, 0.015);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    box-shadow: 4px 4px 4px rgba(0,0,0,0.05),
+                inset 0 1px 1px rgba(255,255,255,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass-strong::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.4px;
+    background: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.50) 0%,
+      rgba(255,255,255,0.20) 20%,
+      rgba(255,255,255,0)    40%,
+      rgba(255,255,255,0)    60%,
+      rgba(255,255,255,0.20) 80%,
+      rgba(255,255,255,0.50) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .gradient-fade-t {
+    background: linear-gradient(to top, transparent 0%, hsl(var(--background)) 100%);
+  }
+  .gradient-fade-b {
+    background: linear-gradient(to bottom, transparent 0%, hsl(var(--background)) 100%);
+  }
+
+  .bg-video-placeholder {
+    background: linear-gradient(-45deg, #1a0e08, #2d1a10, #14110d, #221608);
+    background-size: 400% 400%;
+    animation: warm-drift 14s ease infinite;
+  }
+}
