@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Body — Logo Concepts</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f5f0e8;
+    font-family: 'Montserrat', sans-serif;
+    color: #1a1208;
+    padding: 60px 40px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .page-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+    font-size: 11px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #8a7a66;
+    margin-bottom: 16px;
+  }
+
+  .page-header p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: #9a8a76;
+    letter-spacing: 1px;
+  }
+
+  .logos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .logo-card {
+    background: #faf7f2;
+    border: 1px solid #e8e0d4;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .logo-card.dark {
+    background: #14110d;
+    border-color: #2a2520;
+  }
+
+  .logo-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 70px 60px;
+    min-height: 280px;
+  }
+
+  .logo-meta {
+    padding: 24px 32px 28px;
+    border-top: 1px solid #e8e0d4;
+    background: #f5f0e8;
+  }
+
+  .logo-card.dark .logo-meta {
+    border-top-color: #2a2520;
+    background: #1a1510;
+  }
+
+  .logo-number {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #a89880;
+    margin-bottom: 6px;
+  }
+
+  .logo-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #2a2018;
+    margin-bottom: 8px;
+  }
+
+  .logo-card.dark .logo-name {
+    color: #e8ddd0;
+  }
+
+  .logo-desc {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    line-height: 1.7;
+    color: #7a6a58;
+  }
+
+  .logo-card.dark .logo-desc {
+    color: #7a6a58;
+  }
+
+  .colors {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .color-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  /* ===================== LOGO 1 ===================== */
+  .logo-1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .logo-1 .eyebrow {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 7.5px;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: #a89268;
+    margin-bottom: 10px;
+  }
+
+  .logo-1 .main-word {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 58px;
+    letter-spacing: 16px;
+    text-transform: uppercase;
+    color: #1a1208;
+    line-height: 1;
+    margin-left: 16px;
+  }
+
+  .logo-1 .divider {
+    width: 100%;
+    height: 0.5px;
+    background: linear-gradient(to right, transparent, #a89268, transparent);
+    margin: 12px 0;
+  }
+
+  .logo-1 .tagline {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 7px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #7a6a52;
+    text-align: center;
+  }
+
+  /* ===================== LOGO 2 ===================== */
+  .logo-2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .logo-2 svg {
+    overflow: visible;
+  }
+
+  /* ===================== LOGO 3 ===================== */
+  .logo-3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo-3 .bracket-wrap {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .logo-3 .bracket {
+    width: 1px;
+    height: 70px;
+    background: #c8a878;
+    position: relative;
+  }
+
+  .logo-3 .bracket::before,
+  .logo-3 .bracket::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 1px;
+    background: #c8a878;
+  }
+
+  .logo-3 .bracket::before { top: 0; left: 0; }
+  .logo-3 .bracket::after  { bottom: 0; left: 0; }
+
+  .logo-3 .bracket.right::before,
+  .logo-3 .bracket.right::after {
+    left: auto;
+    right: 0;
+  }
+
+  .logo-3 .center-text {
+    text-align: center;
+  }
+
+  .logo-3 .the-word {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+    font-size: 9px;
+    letter-spacing: 7px;
+    text-transform: uppercase;
+    color: #a89268;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .logo-3 .body-word {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 46px;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    color: #1a1208;
+    margin-left: 10px;
+    line-height: 1;
+  }
+
+  .logo-3 .sub {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 6.5px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #8a7a62;
+    margin-top: 5px;
+    text-align: center;
+  }
+
+  /* ===================== LOGO 4 ===================== */
+  .logo-4 {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .logo-4 .monogram-ring {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+  }
+
+  .logo-4 .text-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .logo-4 .the-sm {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 8px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #c8a878;
+  }
+
+  .logo-4 .body-lg {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 44px;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: #f0ead8;
+    line-height: 1;
+    margin-left: 8px;
+  }
+
+  .logo-4 .tagline-sm {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+    font-size: 6.5px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #8a7a62;
+    margin-top: 3px;
+  }
+
+  /* ===================== LOGO 5 ===================== */
+  .logo-5 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-5 .icon-wrap {
+    position: relative;
+    width: 52px;
+    height: 52px;
+  }
+
+  .logo-5 .word-wrap {
+    text-align: center;
+  }
+
+  .logo-5 .the-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 8.5px;
+    letter-spacing: 9px;
+    text-transform: uppercase;
+    color: #8a7a62;
+    margin-bottom: 2px;
+    margin-left: 9px;
+  }
+
+  .logo-5 .body-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 52px;
+    letter-spacing: 18px;
+    text-transform: uppercase;
+    color: #f0ead8;
+    line-height: 1;
+    margin-left: 18px;
+  }
+
+  .logo-5 .dots-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .logo-5 .dot-line {
+    width: 30px;
+    height: 0.5px;
+    background: #5a4f40;
+  }
+
+  .logo-5 .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #8a7060;
+  }
+
+  .logo-5 .sub-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+    font-size: 6px;
+    letter-spacing: 4.5px;
+    text-transform: uppercase;
+    color: #6a5a4a;
+    margin-left: 4.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>The Body · Logo Concepts · Charlotte, NC</h1>
+  <p>5 variants for review — premium wellness studio</p>
+</div>
+
+<div class="logos-grid">
+
+  <!-- LOGO 1: Classic Luxury Wordmark -->
+  <div class="logo-card">
+    <div class="logo-display">
+      <div class="logo-1">
+        <div class="eyebrow">Charlotte, North Carolina</div>
+        <div class="main-word">The Body</div>
+        <div class="divider"></div>
+        <div class="tagline">Body Sculpting &nbsp;·&nbsp; Wellness &nbsp;·&nbsp; Rituals</div>
+      </div>
+    </div>
+    <div class="logo-meta">
+      <div class="logo-number">Concept 01</div>
+      <div class="logo-name">Classic Serif Wordmark</div>
+      <div class="logo-desc">Timeless luxury through Cormorant Garamond with wide tracking. Thin gold divider adds ritual feel. Works on all backgrounds — packaging, website hero, business cards.</div>
+      <div class="colors">
+        <div class="color-dot" style="background:#1a1208"></div>
+        <div class="color-dot" style="background:#faf7f2"></div>
+        <div class="color-dot" style="background:#a89268"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO 2: Botanical Arc -->
+  <div class="logo-card">
+    <div class="logo-display">
+      <svg width="340" height="180" viewBox="0 0 340 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Botanical arc line -->
+        <path d="M80 90 Q170 20 260 90" stroke="#a89268" stroke-width="0.8" fill="none"/>
+        <!-- Small leaf details on arc -->
+        <ellipse cx="104" cy="63" rx="4" ry="2" fill="none" stroke="#a89268" stroke-width="0.6" transform="rotate(-40 104 63)"/>
+        <ellipse cx="130" cy="43" rx="4" ry="2" fill="none" stroke="#a89268" stroke-width="0.6" transform="rotate(-15 130 43)"/>
+        <ellipse cx="170" cy="34" rx="4" ry="2" fill="none" stroke="#a89268" stroke-width="0.6" transform="rotate(0 170 34)"/>
+        <ellipse cx="210" cy="43" rx="4" ry="2" fill="none" stroke="#a89268" stroke-width="0.6" transform="rotate(15 210 43)"/>
+        <ellipse cx="237" cy="63" rx="4" ry="2" fill="none" stroke="#a89268" stroke-width="0.6" transform="rotate(40 237 63)"/>
+        <!-- Small dots at arc ends -->
+        <circle cx="80" cy="90" r="2" fill="#a89268"/>
+        <circle cx="260" cy="90" r="2" fill="#a89268"/>
+        <!-- THE small -->
+        <text x="170" y="100" text-anchor="middle"
+          font-family="Montserrat, sans-serif" font-weight="300"
+          font-size="7" letter-spacing="8" fill="#8a7a62"
+          text-decoration="none">THE</text>
+        <!-- BODY large -->
+        <text x="170" y="138" text-anchor="middle"
+          font-family="Cormorant Garamond, serif" font-weight="400"
+          font-size="46" letter-spacing="14" fill="#1a1208">BODY</text>
+        <!-- tagline -->
+        <text x="170" y="158" text-anchor="middle"
+          font-family="Montserrat, sans-serif" font-weight="300"
+          font-size="6" letter-spacing="4" fill="#8a7060">WELLNESS STUDIO</text>
+      </svg>
+    </div>
+    <div class="logo-meta">
+      <div class="logo-number">Concept 02</div>
+      <div class="logo-name">Botanical Arc</div>
+      <div class="logo-desc">Delicate botanical wreath arc above the wordmark — suggests ritual, nature, cedar, organic care. Gold-olive tones reinforce the natural wellness palette without being overly decorative.</div>
+      <div class="colors">
+        <div class="color-dot" style="background:#1a1208"></div>
+        <div class="color-dot" style="background:#faf7f2"></div>
+        <div class="color-dot" style="background:#a89268"></div>
+        <div class="color-dot" style="background:#6b7c5a"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO 3: Brackets Wordmark -->
+  <div class="logo-card">
+    <div class="logo-display">
+      <div class="logo-3">
+        <div class="bracket-wrap">
+          <div class="bracket left"></div>
+          <div class="center-text">
+            <div class="the-word">The</div>
+            <div class="body-word">Body</div>
+            <div class="sub">Body Sculpting &nbsp;·&nbsp; Wellness</div>
+          </div>
+          <div class="bracket right"></div>
+        </div>
+      </div>
+    </div>
+    <div class="logo-meta">
+      <div class="logo-number">Concept 03</div>
+      <div class="logo-name">Architectural Brackets</div>
+      <div class="logo-desc">Thin vertical lines with corner detailing frame the brand name — architectural, refined, premium. Suggests precision and a structured, professional approach. Strong for signage and print.</div>
+      <div class="colors">
+        <div class="color-dot" style="background:#1a1208"></div>
+        <div class="color-dot" style="background:#faf7f2"></div>
+        <div class="color-dot" style="background:#c8a878"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO 4: Dark Monogram + Wordmark -->
+  <div class="logo-card dark">
+    <div class="logo-display">
+      <div class="logo-4">
+        <div class="monogram-ring">
+          <svg width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- outer thin circle -->
+            <circle cx="45" cy="45" r="42" stroke="#4a3f30" stroke-width="0.6"/>
+            <!-- inner thin circle -->
+            <circle cx="45" cy="45" r="36" stroke="#6a5a40" stroke-width="0.4"/>
+            <!-- T letter -->
+            <text x="28" y="56" font-family="Cormorant Garamond, serif" font-weight="300"
+              font-size="34" fill="#c8a878" letter-spacing="-1">TB</text>
+          </svg>
+        </div>
+        <div class="text-block">
+          <div class="the-sm">The</div>
+          <div class="body-lg">Body</div>
+          <div class="tagline-sm">Body Sculpting &nbsp;·&nbsp; Wellness &nbsp;·&nbsp; Rituals</div>
+        </div>
+      </div>
+    </div>
+    <div class="logo-meta">
+      <div class="logo-number">Concept 04</div>
+      <div class="logo-name">Monogram Badge · Dark</div>
+      <div class="logo-desc">Gold "TB" monogram in a double-ring badge alongside the full wordmark. Dark background exudes exclusivity and depth. Ideal for packaging, gift cards, merchandise, wax seals.</div>
+      <div class="colors">
+        <div class="color-dot" style="background:#14110d"></div>
+        <div class="color-dot" style="background:#c8a878"></div>
+        <div class="color-dot" style="background:#f0ead8"></div>
+        <div class="color-dot" style="background:#4a3f30"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO 5: Body Curve Symbol + Dark -->
+  <div class="logo-card dark">
+    <div class="logo-display">
+      <div class="logo-5">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Abstract body curve — minimal feminine silhouette -->
+          <path d="M30 8 C30 8, 42 16, 42 26 C42 34, 36 36, 36 43 C36 50, 30 54, 30 54
+                   C30 54, 24 50, 24 43 C24 36, 18 34, 18 26 C18 16, 30 8, 30 8Z"
+            stroke="#c8a878" stroke-width="0.8" fill="none"/>
+          <!-- center vertical line through the shape -->
+          <line x1="30" y1="8" x2="30" y2="54" stroke="#4a3f30" stroke-width="0.4" stroke-dasharray="2 3"/>
+        </svg>
+        <div class="word-wrap">
+          <div class="the-text">The</div>
+          <div class="body-text">Body</div>
+          <div class="dots-row">
+            <div class="dot-line"></div>
+            <div class="dot"></div>
+            <div class="sub-text">Wellness Studio</div>
+            <div class="dot"></div>
+            <div class="dot-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="logo-meta">
+      <div class="logo-number">Concept 05</div>
+      <div class="logo-name">Body Curve Symbol · Dark</div>
+      <div class="logo-desc">A minimal abstract body silhouette as standalone icon — versatile for Instagram profile, favicon, embossing. Pairs with the wordmark or stands alone. Sensory, feminine, modern premium.</div>
+      <div class="colors">
+        <div class="color-dot" style="background:#14110d"></div>
+        <div class="color-dot" style="background:#c8a878"></div>
+        <div class="color-dot" style="background:#f0ead8"></div>
+        <div class="color-dot" style="background:#5a4f40"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="text-align:center; margin-top: 80px; padding-bottom: 40px;">
+  <p style="font-family:'Montserrat',sans-serif; font-weight:200; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:#a89268;">
+    The Body · Charlotte, NC · Logo Concepts 2024
+  </p>
+</div>
+
+</body>
+</html>
